@@ -1,4 +1,4 @@
-# Hands-On with ROS 2 Deliberation Technologies
+# Examples of ROS 2 Deliberation Technologies
 
 This repository contains materials for the [ROSCon 2024](https://roscon.ros.org/2024/) workshop on ROS 2 Deliberation Technologies.
 You can find the [slides here](https://drive.google.com/drive/folders/15H6QdkICynKpVlMn2Glz0ynS692LxZH8?usp=drive_link).
@@ -18,21 +18,18 @@ To learn more about deliberation, refer to [Ingrand and Ghallab (2017)](https://
 
 ## Technology Overview
 
-In this hands-on workshop, you will get the opportunity to use a few ROS 2 enabled tools designed for robot deliberation.
+In this repository, you get the opportunity to use a few ROS 2 enabled tools designed for robot deliberation.
 
-This workshop uses [PyRoboSim](https://github.com/sea-bass/pyrobosim) as a simple 2D simulator with a ROS 2 interface to test our deliberation technologies.
+Our examples use [PyRoboSim](https://github.com/sea-bass/pyrobosim) as a simple 2D simulator with a ROS 2 interface to test the deliberation technologies.
 PyRoboSim simulates mobile robots navigating across various locations, with the ability to detect and manipulate objects, and open and close locations.
 Additionally, it can simulate failures and battery usage in the above actions.
 
-* The [`problems`](./problems/README.md) folder contains information about the robotics problems you will solve in this workshop.
+* The [`problems`](./problems/README.md) folder contains information about the robotics problems you will solve as examples.
 * The [`technologies`](./technologies/README.md) folder contains more detailed information on the deliberation software tools you will use to solve these problems.
 
 ![image](media/pyrobosim_world.png)
 
 ## Setup
-
-> [!NOTE]
-> Please make sure you have completed the setup steps before arriving at the workshop.
 
 ### System Requirements
 
@@ -60,10 +57,10 @@ docker compose --help
 First, open a terminal window and clone this repository and its submodules.
 
 ```bash
-git clone --recurse-submodules https://github.com/ros-wg-delib/roscon24-workshop.git
+git clone --recurse-submodules https://github.com/ros-wg-delib/examples.git
 ```
 
-Change into the repository folder (`cd roscon24-workshop`) and start the Docker container.
+Change into the repository folder (`cd examples`) and start the Docker container.
 
 ```bash
 docker compose run base
@@ -86,7 +83,7 @@ ros2 run delib_ws_worlds run
 docker compose exec base bash
 ```
 
-> Note: This command must be executed from the `roscon24-workshop` repository folder.
+> Note: This command must be executed from the `examples` repository folder.
 
 ## Developing in the Container
 
