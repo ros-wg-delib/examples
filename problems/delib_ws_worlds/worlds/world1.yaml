@@ -18,7 +18,7 @@ robots:
     path_planner:
       type: rrt
       bidirectional: true
-      max_connection_dist: 1.0
+      max_connection_dist: 0.5
       max_time: 5.0
 
 rooms:
