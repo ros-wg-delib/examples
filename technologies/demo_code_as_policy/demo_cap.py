@@ -390,34 +390,26 @@ from env_utils import pick, place, navigate, say, get_obj_names, get_location_na
 
 objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
 locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
-# bring the snacks to the table.
-say('Ok - bringing the snacks to the table')
-navigate('snacks0')
-pick('snacks0')
+# bring the soda to the table.
+say('Ok - bringing the soda to the table')
+navigate('soda0')
+pick('soda0')
 navigate('table')
-place('snacks0')
+place('soda0')
 
 objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
 locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
 # put the bread and the butter on the table.
 say('Sure - putting the bread and the butter on the table')
-navigate('bread0')
-pick('bread0')
-navigate('table')
-place('bread0')
-navigate('butter0')
-pick('butter0')
-navigate('table')
-place('butter0')
+bring_object_to_location('bread0', 'table')
+bring_object_to_location('butter0', 'table')
 
 objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
 locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
 # throw away the waste that is on the desk.
 say('Got it - throwing away the waste')
 navigate('desk')
-pick('waste0')
-navigate('dumpster')
-place('waste0')
+bring_object_to_location('waste', 'dumpster')
 
 objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
 locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
