@@ -189,6 +189,10 @@ class LMPFGen:
 
         exec_safe(f_src, gvars, lvars)
 
+        if f_name not in lvars:
+            raise RuntimeError(
+                f"Generated code did not define '{f_name}':\n{f_src}"
+            )
         f = lvars[f_name]
 
         to_print = highlight(f"{use_query}\n{f_src}", PythonLexer(), TerminalFormatter())
@@ -215,11 +219,14 @@ class LMPFGen:
             all_vars = merge_dicts([self._fixed_vars, self._variable_vars, new_fs, other_vars])
             if not var_exists(f_name, all_vars):
                 f, f_src = self.create_f_from_sig(f_name, f_sig, new_fs, fix_bugs=fix_bugs, return_src=True)
+                # register before recursing so self-recursive bodies aren't re-synthesized forever
+                new_fs[f_name], srcs[f_name] = f, f_src
 
                 # recursively define child_fs in the function body if needed
                 f_def_body = "\n".join(ast.unparse(stmt) for stmt in ast.parse(f_src).body[0].body)
+                child_vars = merge_dicts([self._fixed_vars, self._variable_vars, new_fs, other_vars])
                 child_fs, child_f_srcs = self.create_new_fs_from_code(
-                    f_def_body, other_vars=all_vars, fix_bugs=fix_bugs, return_src=True
+                    f_def_body, other_vars=child_vars, fix_bugs=fix_bugs, return_src=True
                 )
 
                 if len(child_fs) > 0:
@@ -233,8 +240,7 @@ class LMPFGen:
                     exec_safe(f_src, gvars, lvars)
 
                     f = lvars[f_name]
-
-                new_fs[f_name], srcs[f_name] = f, f_src
+                    new_fs[f_name] = f
 
         if return_src:
             return new_fs, srcs
@@ -427,6 +433,20 @@ objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
 locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
 # can you fly.
 say('No, I can only navigate, pick and place objects')
+
+objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
+locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
+# how many objects are there in total.
+say(f'There are {count_items(get_obj_names())} objects in total')
+
+objects = ['bread0', 'snacks0', 'soda0', 'butter0', 'waste0', 'waste1']
+locations = ['table', 'desk', 'fridge', 'pantry', 'bin', 'dumpster', 'charger']
+# Bring all food items to the table.
+say('Sure - bringing all food items to the table')
+for obj in get_obj_names():
+    if 'bread' in obj or 'snacks' in obj or 'soda' in obj or 'butter' in obj:
+        bring_object_to_location(obj, 'table')
+
 '''.strip()
 
 # %%
@@ -435,13 +455,16 @@ prompt_fgen = '''
 def get_total(xs):
     return sum(xs)
 
-# define function: y = eval_line(x, slope, y_intercept=0).
-def eval_line(x, slope, y_intercept):
-    return x * slope + y_intercept
-
 # define function: is_member = contains(item, items).
 def contains(item, items):
     return item in items
+
+# define function: bring_object_to_location(obj, 'dumpster').
+def bring_object_to_location(obj, location):
+    navigate(obj)
+    pick(obj)
+    navigate(location)
+    place(obj)
 '''.strip()
 
 # %% [markdown]
@@ -521,7 +544,10 @@ def main():
             if not user_input:
                 break
             context = f"objects = {env.get_obj_names()}\nlocations = {env.get_location_names()}"
-            lmp_pyrobosim_ui(user_input, context)
+            try:
+                lmp_pyrobosim_ui(user_input, context)
+            except Exception as e:
+                print(f"Command failed: {e}")
     finally:
         env.shutdown()
         rclpy.shutdown()

@@ -55,3 +55,17 @@ commands for problem 1:
 * `what objects do you see`
 
 Enter an empty line to quit.
+
+## Function Generation (FGen)
+
+As in the original Code as Policies paper, generated code can call helper functions that are not
+predefined. When this happens, a second LLM query (the `fgen` LMP) synthesizes that function on
+the fly from its name and arguments, and it stays available for the rest of the session.
+
+The `# how many objects are there in total.` few-shot example calls an undefined `count_items`
+helper to demonstrate this. Try it with:
+
+* `how many objects are there in total`
+
+Watch the console: you should see `Creating function: count_items(...)` and `LMP FGEN created: ...`
+before the answer is printed.
